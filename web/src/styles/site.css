@@ -36,6 +36,9 @@ body.dark {
 }
 
 #aio-toolbar .aio-title {
+    margin: 0;
+    font-size: inherit;
+    line-height: inherit;
     font-weight: 600;
 }
 
@@ -245,4 +248,59 @@ body.dark {
     min-height: 1.6em;
     white-space: pre-line;
     color: var(--aio-accent);
+}
+
+/* 紹介文 (検索エンジン向けの静的な説明) */
+#aio-about {
+    max-width: 960px;
+    margin: 48px auto 0;
+    padding: 24px 16px 48px;
+    border-top: 1px solid var(--aio-border);
+    color: var(--aio-fg);
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+#aio-about h2 {
+    margin: 0 0 8px;
+    font-size: 18px;
+    line-height: 1.5;
+}
+
+#aio-about h3 {
+    margin: 0 0 4px;
+    font-size: 15px;
+}
+
+#aio-about p {
+    margin: 4px 0 12px;
+}
+
+#aio-about .aio-about-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 8px 24px;
+    margin: 16px 0;
+}
+
+#aio-about code {
+    font-size: 13px;
+    padding: 0 4px;
+    border-radius: 4px;
+    background: rgba(127, 127, 127, 0.18);
+}
+
+#aio-about .aio-about-en,
+#aio-about .aio-about-links {
+    color: var(--aio-muted);
+    font-size: 13px;
+}
+
+#aio-about a {
+    color: var(--aio-accent);
+}
+
+#aio-about .aio-noscript {
+    color: var(--aio-danger);
+    font-weight: 600;
 }

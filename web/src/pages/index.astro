@@ -3,17 +3,69 @@
 import gradioShell from '../aio/gradio-shell.html?raw'
 import '../styles/gradio-shell.css'
 import '../styles/site.css'
+import { SITE_NAME, TITLE, DESCRIPTION, DESCRIPTION_EN, REPO_URL, UPSTREAM_URL, siteUrl } from '../site.js'
 
 const base = import.meta.env.BASE_URL.replace(/\/?$/, '/')
+const pageUrl = siteUrl(Astro.site, import.meta.env.BASE_URL)
+const ogImage = new URL('og.png', pageUrl).href
+
+// 構造化データ (検索結果でアプリとして扱ってもらうため)
+const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: SITE_NAME,
+    url: pageUrl,
+    description: DESCRIPTION,
+    image: ogImage,
+    applicationCategory: 'DesignApplication',
+    operatingSystem: 'Any',
+    browserRequirements: 'Requires JavaScript. WebGPU is recommended for in-browser translation.',
+    inLanguage: ['ja', 'en', 'zh'],
+    isAccessibleForFree: true,
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'JPY' },
+    license: 'https://opensource.org/licenses/MIT',
+    isBasedOn: UPSTREAM_URL,
+    codeRepository: REPO_URL,
+    featureList: [
+        'Tag-based prompt editing (weights, ordering, disabling, LoRA)',
+        'Keyword groups',
+        'History and favorites',
+        'On-device translation with PLaMo 3 Translate (WebGPU)',
+        'Backup and restore',
+    ],
+}
 ---
 <!doctype html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Stable Diffusion のプロンプトを書く・整理する・翻訳するツール。ブラウザだけで動き、データは端末内に保存されます。" />
-    <title>Prompt All-in-One</title>
+    <title>{TITLE}</title>
+    <meta name="description" content={DESCRIPTION} />
+    <link rel="canonical" href={pageUrl} />
+    <meta name="theme-color" content="#171717" />
+    <meta name="color-scheme" content="dark light" />
     <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
+    <link rel="sitemap" href={`${base}sitemap.xml`} />
+
+    <!-- OGP / X (Twitter) カード -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:title" content={TITLE} />
+    <meta property="og:description" content={DESCRIPTION} />
+    <meta property="og:url" content={pageUrl} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Prompt All-in-One Web の画面。プロンプトがタグに分割され、日本語の訳が表示されている" />
+    <meta property="og:locale" content="ja_JP" />
+    <meta property="og:locale:alternate" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={TITLE} />
+    <meta name="twitter:description" content={DESCRIPTION} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
     <!-- 上流 Vue アプリが参照するグローバル (旧 static/index.html と同じ) -->
     <script is:inline>
         // テーマ: 既定はダーク。上流アプリは URL の ?__theme= を見てテーマを決め、切り替え時もこの値を書き換えて再読み込みする。
@@ -59,7 +111,7 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, '/')
     <!-- 最初の描画からテーマを当てて、明るい画面がちらつかないようにする -->
     <script is:inline>document.body.classList.add(window.__aioTheme)</script>
     <header id="aio-toolbar">
-        <span class="aio-title">Prompt All-in-One <small>Web</small></span>
+        <h1 class="aio-title">Prompt All-in-One <small>Web</small></h1>
         <span class="aio-note" data-i18n="note">データはこのブラウザ内にだけ保存されます</span>
         <button type="button" id="aio-open-data" data-i18n="data">データ管理</button>
     </header>
@@ -70,6 +122,39 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, '/')
     </div>
 
     <Fragment set:html={gradioShell} />
+
+    <!-- 紹介文: アプリ本体は JavaScript で描画されるので、検索エンジンや JS 無効の環境向けに静的な説明を置く -->
+    <section id="aio-about" aria-labelledby="aio-about-title">
+        <h2 id="aio-about-title">Stable Diffusion のプロンプトを、ブラウザだけで編集・整理・翻訳</h2>
+        <p>
+            Prompt All-in-One Web は、Stable Diffusion (AUTOMATIC1111 / Forge など) で使うプロンプトをタグ単位で扱える無料のツールです。
+            インストールやサーバーの起動は不要で、このページを開くだけで使えます。
+        </p>
+        <noscript><p class="aio-noscript">このツールを使うには JavaScript を有効にしてください。</p></noscript>
+        <div class="aio-about-grid">
+            <div>
+                <h3>タグ単位で編集</h3>
+                <p>カンマ区切りのプロンプトを自動でタグに分け、重み付け <code>(tag:1.2)</code>、並べ替え、一時的な無効化、LoRA の表記をまとめて扱えます。ネガティブプロンプトや img2img 用のプロンプトも同じように編集できます。</p>
+            </div>
+            <div>
+                <h3>端末内で翻訳</h3>
+                <p>翻訳 LLM「PLaMo 3 Translate」をブラウザの中で動かします (WebGPU)。日本語で書いたキーワードを英語のプロンプトにしたり、英語のタグに訳を表示したりできます。翻訳する文章は外部に送られません。</p>
+            </div>
+            <div>
+                <h3>キーワードグループ・履歴・お気に入り</h3>
+                <p>人物・服装・表情・シーンなどのグループからタグを選んで追加できます。編集したプロンプトは履歴に残り、よく使うものはお気に入りに登録できます。</p>
+            </div>
+            <div>
+                <h3>データはブラウザ内に保存</h3>
+                <p>履歴や設定はこのブラウザ (IndexedDB) にだけ保存されます。別の端末へはバックアップの書き出し・読み込みで移せます。</p>
+            </div>
+        </div>
+        <p class="aio-about-en" lang="en">{DESCRIPTION_EN}</p>
+        <p class="aio-about-links">
+            <a href={REPO_URL} rel="noopener">GitHub</a>
+            ・ベース: <a href={UPSTREAM_URL} rel="noopener">sd-webui-prompt-all-in-one</a> (Physton, MIT License)
+        </p>
+    </section>
 
     <div id="aio-progress" hidden role="status" aria-live="polite">
         <div class="aio-progress-label"></div>
