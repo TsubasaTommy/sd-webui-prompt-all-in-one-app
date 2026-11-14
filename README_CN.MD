@@ -1,152 +1,59 @@
-# sd-webui-prompt-all-in-one-app
-
-[![GitHub stars](https://img.shields.io/github/stars/Physton/sd-webui-prompt-all-in-one-app?style=flat-square)](https://github.com/Physton/sd-webui-prompt-all-in-one-app/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/Physton/sd-webui-prompt-all-in-one-app?style=flat-square)](https://github.com/Physton/sd-webui-prompt-all-in-one-app/network/members)
-[![GitHub issues](https://img.shields.io/github/issues/Physton/sd-webui-prompt-all-in-one-app?style=flat-square)](https://github.com/Physton/sd-webui-prompt-all-in-one-app/issues)
-[![GitHub issues closed](https://img.shields.io/github/issues-closed/Physton/sd-webui-prompt-all-in-one-app?style=flat-square)](https://github.com/Physton/sd-webui-prompt-all-in-one-app/issues?q=is%3Aissue+is%3Aclosed)
-[![GitHub license](https://img.shields.io/github/license/Physton/sd-webui-prompt-all-in-one-app?style=flat-square)](https://github.com/Physton/sd-webui-prompt-all-in-one-app/blob/master/LICENSE.md)
-[![GitHub commits](https://img.shields.io/github/last-commit/Physton/sd-webui-prompt-all-in-one-app?style=flat-square)](https://github.com/Physton/sd-webui-prompt-all-in-one-app/commits/main)
-[![Downloads total](https://img.shields.io/github/downloads/physton/sd-webui-prompt-all-in-one-app/total?style=flat-square)](https://github.com/Physton/sd-webui-prompt-all-in-one-app/releases)
-[![Latest release](https://img.shields.io/github/v/release/physton/sd-webui-prompt-all-in-one-app?style=flat-square)](https://github.com/Physton/sd-webui-prompt-all-in-one-app/releases)
-[![Docker Pulls](https://img.shields.io/docker/pulls/physton/sd-webui-prompt-all-in-one-app?style=flat-square)](https://hub.docker.com/r/physton/sd-webui-prompt-all-in-one-app)
-[![Docker stars](https://img.shields.io/docker/stars/physton/sd-webui-prompt-all-in-one-app?style=flat-square)](https://hub.docker.com/r/physton/sd-webui-prompt-all-in-one-app/stargazers)
+# Prompt All-in-One Web
 
 <div align="center">
 
-### [🇺🇸 English](README.MD) | [🇨🇳 简体中文](README_CN.MD)
+[日本語](README.MD) | **简体中文**
 
 </div>
 
-本项目是 [sd-webui-prompt-all-in-one](https://github.com/physton/sd-webui-prompt-all-in-one) 的独立版本，它不需要依赖 [stable-diffusion-webui](https://github.com/AUTOMATIC1111/stable-diffusion-webui) 环境，即可在网页中编写和维护你的提示词。
+用于编写、整理和翻译 Stable Diffusion 提示词的 Web 应用。
+**只需在浏览器中打开即可使用**，无需安装 Python，也无需启动服务器。
+
+👉 **https://tsubasatommy.github.io/sd-webui-prompt-all-in-one-app/**
 
 ![](./assets/screenshot.jpeg)
 
-----
+本项目将 [sd-webui-prompt-all-in-one](https://github.com/Physton/sd-webui-prompt-all-in-one)（作者 Physton）移植为仅靠 GitHub Pages 静态页面即可运行的版本，界面和操作与原版相同。
 
-> 如果你觉得这个扩展有帮助，请在Github上给我一颗星！
-> 你也可以请我喝杯咖啡: [donate](#捐赠)
+## 翻译
 
-----
+默认在**浏览器内**运行 **[PLaMo 3 Translate](https://huggingface.co/pfnet/plamo-3-translate-0.8b)**（[wllama](https://github.com/ngxson/wllama) / WebGPU）。
 
-- [Windows 一键启动](#windows-一键启动)
-- [Docker 运行](#docker-运行)
-- [手动运行](#手动运行)
-- [捐赠](#捐赠)
+- 首次使用时从 Hugging Face 下载模型（0.8B 约 0.6GB / 2B 约 1.4GB）并缓存在浏览器中，之后无需联网即可翻译。
+- 翻译内容不会离开你的设备。
+- 支持 53 种语言。界面语言不受 PLaMo 支持时，默认使用 MyMemory。
 
-## Windows 一键启动
+也可以在翻译设置中选择：本地服务器上的 PLaMo（Ollama / LM Studio / llama-server）、OpenAI、Microsoft、Google Cloud、MyMemory。原版中的免费翻译接口（网页抓取类）和 DeepL 等无法从浏览器直接调用（CORS），因此不可用。
 
-1. 前往 [Releases](https://github.com/Physton/sd-webui-prompt-all-in-one-app/releases)，根据你的系统下载对应的压缩包。
-  - x64: [sd-webui-prompt-all-in-one-app.windows-x64.zip](https://github.com/Physton/sd-webui-prompt-all-in-one-app/releases/latest/download/sd-webui-prompt-all-in-one-app.windows-x64.zip)
-  - x86: [sd-webui-prompt-all-in-one-app.windows-x86.zip](https://github.com/Physton/sd-webui-prompt-all-in-one-app/releases/latest/download/sd-webui-prompt-all-in-one-app.windows-x86.zip)
-2. 解压压缩包，双击 `startup-windows.bat` 启动。
-3. 第一次启动会自动安装依赖，需要等待一段时间。
-4. 启动成功后，使用浏览器访问 [http://localhost:17860](http://localhost:17860)
-5. 如果需要修改端口、用户名、密码等配置，编辑 `.\sd-webui-prompt-all-in-one-app\.env` 文件即可。
+## 数据
 
-> 如果你是中国大陆用户，可能因为网络原因无法正常安装依赖，可以尝试通过下面方法修改镜像源，然后再次运行 `startup-windows.bat` 启动。
-> 1. 使用记事本编辑 `startup-windows.bat` 文件
-> 2. 找到 `pip install -r requirements.txt` 这一行
-> 3. 将其修改为 `pip install -r requirements.txt -i https://pypi.mirrors.ustc.edu.cn/simple`
-> 4. 保存并关闭文件，再次运行 `startup-windows.bat` 启动
+历史记录、收藏和设置**只保存在当前浏览器中（IndexedDB）**，不会发送到服务器。
 
-## Docker 运行
+- 不会在设备或浏览器之间同步。迁移时请在右上角的「データ管理（Data）」中导出，再在新环境中导入。
+- 备份默认不包含 API Key（勾选后才包含）。
+- 可以直接导入 Python 版 `storage` 文件夹中的 `.json` 文件来迁移数据。
 
-### 运行
+> **关于 API Key：** GitHub Pages 上同一所有者的所有站点共享同一个源（`<owner>.github.io`），同一账号下的其他站点也能读取本站保存的数据（包括 API Key）。如需保存 API Key，请使用自定义域名，或不要在同一账号下托管不可信的页面。
 
-- 使用命令行运行
-  ```bash
-  docker run -d \
-  -p 17860:17860 \
-  -e APP_PORT=17860 \
-  -e APP_USERNAME=admin \
-  -e APP_PASSWORD= \
-  -v ./dockertest/storage:/app/sd-webui-prompt-all-in-one/storage \
-  -v ./dockertest/models:/app/sd-webui-prompt-all-in-one/models \
-  -v ./dockertest/tags:/app/sd-webui-prompt-all-in-one/tags \
-  --name sd-webui-prompt-all-in-one-app \
-  physton/sd-webui-prompt-all-in-one-app
-  ```
+## 开发
 
-- 使用 docker-compose 运行
-  1. 新建 `docker-compose.yml` 文件
-  ```yaml
-  version: '3.7'
-  services:
-    sd-webui-prompt-all-in-one-app:
-      image: physton/sd-webui-prompt-all-in-one-app
-      container_name: sd-webui-prompt-all-in-one-app
-      restart: always
-      ports:
-        - 17860:17860
-      environment:
-        - APP_PORT=17860
-        - APP_USERNAME=admin
-        - APP_PASSWORD=
-      volumes:
-        - ./dockertest/storage:/app/sd-webui-prompt-all-in-one/storage
-        - ./dockertest/models:/app/sd-webui-prompt-all-in-one/models
-        - ./dockertest/tags:/app/sd-webui-prompt-all-in-one/tags
-  ```
-  2. 启动
-  ```bash
-  docker-compose up -d
-  ```
+需要 Node.js 22.23.4 以上。
 
-### 访问
-[http://localhost:17860](http://localhost:17860)
+```bash
+git clone --recurse-submodules https://github.com/TsubasaTommy/sd-webui-prompt-all-in-one-app.git
+cd sd-webui-prompt-all-in-one-app/web
+npm ci
+npm run dev      # http://localhost:4321
+npm run build    # 输出到 web/dist
+```
 
-### 环境变量
-| 参数 | 说明 | 默认值 | 说明 |
-|:-----------:| :----: | :----: | :----: |
-| APP_PORT | 服务端口 | 17860 | 不能为空 |
-| APP_USERNAME | 用户名 | admin | 可以为空 |
-| APP_PASSWORD | 密码 |  | 可以为空，如果为空，将不需要密码即可访问 |
+推送到 `main` 后，[.github/workflows/pages.yml](.github/workflows/pages.yml) 会自动发布到 GitHub Pages（首次需要在 Settings → Pages → Source 中选择 GitHub Actions）。
 
-### 挂载目录
-| 目录 |  说明   |
-|:-----------:|:-----:|
-| /app/sd-webui-prompt-all-in-one/storage | 存储目录  |
-| /app/sd-webui-prompt-all-in-one/models | 模型目录  |
-| /app/sd-webui-prompt-all-in-one/tags | CSV目录 |
+详细说明请参阅[日文版 README](README.MD)。
 
+## 许可证
 
-## 手动运行
+[MIT License](LICENSE)
 
-1. 安装 [python](https://www.python.org/downloads/) 3.9+
-  > 请自行搜索安装教程，并将 python 添加到环境变量
-2. 下载本项目到本地。
-  - 方式一：使用 git clone 下载（你的电脑上需要安装 git）
-    ```bash
-    git clone https://github.com/Physton/sd-webui-prompt-all-in-one-app.git --recurse-submodules
-    ```
-    > 请注意，本项目使用了子模块，所以请使用 `--recurse-submodules` 参数下载本项目
-  - 方式二：手动下载：[sd-webui-prompt-all-in-one-app.zip](https://github.com/Physton/sd-webui-prompt-all-in-one-app/releases/latest/download/sd-webui-prompt-all-in-one-app.zip) 并解压。
-3. 打开系统命令行（终端），进入本项目目录
-  ```bash
-  cd sd-webui-prompt-all-in-one-app
-  ```
-4. 安装依赖
-  ```bash
-  pip3 install -r requirements.txt
-  python install.py
-  ```
-5. 运行
-  ```bash
-  python app.py
-  ```
-6. 访问 [http://localhost:17860](http://localhost:17860)
-7. 如果需要修改端口、用户名、密码等配置，编辑根目录下的 `.env` 文件即可。
-
-## 捐赠
-
-[捐赠列表](https://aiodoc.physton.com/zh-CN/Donate.html)
-
-### 请我喝杯咖啡
-
-| Buy me a coffee (EN) | [![Buy me a coffee](https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png)](https://buymeacoffee.com/physton) |
-|:-----------:| :----: |
-| ko-fi (EN) | [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/physton) |
-| Paypal (EN) | [https://paypal.me/physton](https://paypal.me/physton) |
-| 爱发电 (CN) | [https://afdian.net/a/physton/thank](https://afdian.net/a/physton/thank) |
-| 支付宝 (CN) | ![](https://s1.imagehub.cc/images/2023/07/05/alipay.jpeg) |
-| 微信赞赏 (CN) | ![](https://s1.imagehub.cc/images/2023/07/05/wechat.jpeg) |
+- 原版 [sd-webui-prompt-all-in-one](https://github.com/Physton/sd-webui-prompt-all-in-one) / [sd-webui-prompt-all-in-one-app](https://github.com/Physton/sd-webui-prompt-all-in-one-app)：© 2023 Physton（MIT License）
+- PLaMo 3 Translate 模型采用 [PLaMo Community License](https://huggingface.co/pfnet/plamo-3-translate-0.8b)。本仓库不包含模型权重，使用时由浏览器直接从 Hugging Face 下载。

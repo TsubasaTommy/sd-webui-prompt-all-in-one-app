@@ -1,0 +1,35 @@
+{
+  "name": "prompt-all-in-one-web",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "scripts": {
+    "sync": "node scripts/sync-aio.mjs",
+    "dev": "npm run sync && astro dev",
+    "build": "npm run sync && astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@wllama/wllama": "^3.13.0",
+    "astro": "^7.4.12",
+    "autosize-input": "^1.0.2",
+    "idb-keyval": "^6.3.0",
+    "js-yaml": "^4.3.2",
+    "less": "^4.9.1",
+    "papaparse": "^5.7.1",
+    "sass": "^1.108.2",
+    "sortablejs": "^1.15.7",
+    "tinycolor2": "^1.6.0",
+    "tippy.js": "^6.3.7",
+    "toastr": "^2.1.4",
+    "vue": "3.2.47",
+    "vue-clipboard3": "^2.0.0",
+    "vue3-colorpicker": "^2.3.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.11"
+  },
+  "engines": {
+    "node": ">=22.23.4"
+  }
+}

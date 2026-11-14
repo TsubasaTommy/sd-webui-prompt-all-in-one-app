@@ -1,0 +1,241 @@
+/* Web 版で追加したツールバー・進捗表示・データ管理ダイアログ */
+:root {
+    --aio-bg: #ffffff;
+    --aio-fg: #1f2328;
+    --aio-muted: #656d76;
+    --aio-border: #d0d7de;
+    --aio-accent: #2563eb;
+    --aio-danger: #cf222e;
+}
+
+body.dark {
+    --aio-bg: #0b0f19;
+    --aio-fg: #e6edf3;
+    --aio-muted: #9198a1;
+    --aio-border: #30363d;
+    --aio-accent: #60a5fa;
+    --aio-danger: #ff7b72;
+}
+
+#aio-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 8px 16px;
+    border-bottom: 1px solid var(--aio-border);
+    color: var(--aio-fg);
+    font-size: 14px;
+}
+
+#aio-toolbar .aio-title {
+    font-weight: 600;
+}
+
+#aio-toolbar .aio-title small {
+    font-weight: 400;
+    color: var(--aio-muted);
+}
+
+#aio-toolbar .aio-note {
+    color: var(--aio-muted);
+    font-size: 12px;
+    flex: 1;
+}
+
+#aio-toolbar button,
+#aio-data-dialog button,
+#aio-data-dialog .aio-file {
+    font: inherit;
+    font-size: 13px;
+    color: var(--aio-fg);
+    background: transparent;
+    border: 1px solid var(--aio-border);
+    border-radius: 6px;
+    padding: 4px 12px;
+    cursor: pointer;
+}
+
+#aio-toolbar button:hover,
+#aio-data-dialog button:hover,
+#aio-data-dialog .aio-file:hover {
+    border-color: var(--aio-accent);
+}
+
+/* ファイル選択はラベル全体に透明な input を重ねて、キーボードでもフォーカス・操作できるようにする */
+#aio-data-dialog .aio-file {
+    position: relative;
+    display: inline-block;
+}
+
+#aio-data-dialog .aio-file input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+#aio-data-dialog .aio-file:focus-within,
+#aio-toolbar button:focus-visible,
+#aio-data-dialog button:focus-visible {
+    outline: 2px solid var(--aio-accent);
+    outline-offset: 2px;
+}
+
+#aio-data-dialog .aio-check {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 8px 0 0;
+    font-size: 13px;
+}
+
+#aio-banner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 8px 16px;
+    background: var(--aio-accent);
+    color: #fff;
+    font-size: 14px;
+}
+
+#aio-banner[hidden],
+#aio-banner button[hidden] {
+    display: none;
+}
+
+#aio-banner button {
+    font: inherit;
+    font-size: 13px;
+    color: inherit;
+    background: transparent;
+    border: 1px solid currentColor;
+    border-radius: 6px;
+    padding: 4px 12px;
+    cursor: pointer;
+}
+
+#aio-progress {
+    position: fixed;
+    left: 50%;
+    bottom: 16px;
+    transform: translateX(-50%);
+    z-index: 100000;
+    width: min(480px, calc(100vw - 32px));
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--aio-border);
+    background: var(--aio-bg);
+    color: var(--aio-fg);
+    font-size: 13px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+#aio-progress .aio-progress-bar {
+    margin-top: 6px;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--aio-border);
+    overflow: hidden;
+}
+
+#aio-progress .aio-progress-bar > span {
+    display: block;
+    height: 100%;
+    width: 0;
+    background: var(--aio-accent);
+    transition: width 0.2s;
+}
+
+#aio-progress.is-indeterminate .aio-progress-bar > span {
+    width: 30% !important;
+    animation: aio-indeterminate 1.2s ease-in-out infinite;
+}
+
+@keyframes aio-indeterminate {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(340%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #aio-progress.is-indeterminate .aio-progress-bar > span {
+        animation: none;
+        width: 100% !important;
+        opacity: 0.4;
+    }
+}
+
+#aio-progress.is-error .aio-progress-label {
+    color: var(--aio-danger);
+}
+
+#aio-data-dialog {
+    width: min(560px, calc(100vw - 32px));
+    border: 1px solid var(--aio-border);
+    border-radius: 10px;
+    background: var(--aio-bg);
+    color: var(--aio-fg);
+    padding: 20px 24px;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+#aio-data-dialog::backdrop {
+    background: rgba(0, 0, 0, 0.4);
+}
+
+#aio-data-dialog h2 {
+    margin: 0 0 8px;
+    font-size: 18px;
+}
+
+#aio-data-dialog h3 {
+    margin: 16px 0 4px;
+    font-size: 15px;
+}
+
+#aio-data-dialog p {
+    margin: 4px 0;
+}
+
+#aio-data-dialog .aio-hint,
+#aio-data-dialog .aio-empty {
+    color: var(--aio-muted);
+    font-size: 12px;
+}
+
+#aio-data-dialog .aio-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 8px 0;
+}
+
+#aio-data-dialog .aio-end {
+    justify-content: flex-end;
+}
+
+#aio-data-dialog .aio-csv-list {
+    list-style: none;
+    padding: 0;
+    margin: 8px 0 0;
+}
+
+#aio-data-dialog .aio-csv-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+    border-bottom: 1px solid var(--aio-border);
+}
+
+#aio-data-dialog .aio-status {
+    min-height: 1.6em;
+    white-space: pre-line;
+    color: var(--aio-accent);
+}

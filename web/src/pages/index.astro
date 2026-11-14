@@ -1,0 +1,93 @@
+---
+// 疑似 gradio DOM は scripts/sync-aio.mjs が static/index.html から取り出したもの
+import gradioShell from '../aio/gradio-shell.html?raw'
+import '../styles/gradio-shell.css'
+import '../styles/site.css'
+
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/')
+---
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Stable Diffusion のプロンプトを書く・整理する・翻訳するツール。ブラウザだけで動き、データは端末内に保存されます。" />
+    <title>Prompt All-in-One</title>
+    <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
+    <!-- 上流 Vue アプリが参照するグローバル (旧 static/index.html と同じ) -->
+    <script is:inline>
+        window.APP_MODE = true
+        window.embeddings = []
+        window.loras = []
+        window.opts = {}
+        window.selectCheckpoint = function (name) {
+            window.opts.sd_model_checkpoint = name
+        }
+        ;(function () {
+            var callbacks = []
+            var loaded = false
+            window.onUiLoaded = function (callback) {
+                if (loaded) callback()
+                else callbacks.push(callback)
+            }
+            window.addEventListener('load', function () {
+                loaded = true
+                callbacks.splice(0).forEach(function (cb) { cb() })
+            })
+        })()
+    </script>
+</head>
+<body>
+    <header id="aio-toolbar">
+        <span class="aio-title">Prompt All-in-One <small>Web</small></span>
+        <span class="aio-note" data-i18n="note">データはこのブラウザ内にだけ保存されます</span>
+        <button type="button" id="aio-open-data" data-i18n="data">データ管理</button>
+    </header>
+
+    <div id="aio-banner" hidden role="alert">
+        <span class="aio-banner-text"></span>
+        <button type="button" id="aio-reload" data-i18n="reload" hidden>再読み込み</button>
+    </div>
+
+    <Fragment set:html={gradioShell} />
+
+    <div id="aio-progress" hidden role="status" aria-live="polite">
+        <div class="aio-progress-label"></div>
+        <div class="aio-progress-bar"><span></span></div>
+    </div>
+
+    <dialog id="aio-data-dialog" aria-labelledby="aio-data-title">
+        <h2 id="aio-data-title" data-i18n="data">データ管理</h2>
+        <section>
+            <h3 data-i18n="backup">バックアップ</h3>
+            <p data-i18n="backup_desc"></p>
+            <label class="aio-check"><input type="checkbox" data-option="include-keys" /> <span data-i18n="include_keys"></span></label>
+            <div class="aio-row">
+                <button type="button" data-action="export" data-i18n="export">書き出す (.json)</button>
+                <label class="aio-file"><span data-i18n="import">読み込む</span><input type="file" accept=".json,application/json" multiple data-action="import" /></label>
+            </div>
+            <p class="aio-hint" data-i18n="import_hint"></p>
+        </section>
+        <section>
+            <h3 data-i18n="csv_title">翻訳用 CSV (tagcomplete)</h3>
+            <p data-i18n="csv_desc"></p>
+            <label class="aio-file"><span data-i18n="csv_add">CSV を追加</span><input type="file" accept=".csv,text/csv" multiple data-action="csv" /></label>
+            <ul class="aio-csv-list"></ul>
+        </section>
+        <section>
+            <h3 data-i18n="storage_title">保存容量</h3>
+            <p class="aio-storage-usage"></p>
+            <p class="aio-storage-persist aio-hint"></p>
+            <button type="button" data-action="clear-model" data-i18n="model_cache_delete">翻訳モデルのキャッシュを削除</button>
+        </section>
+        <p class="aio-status" role="status"></p>
+        <div class="aio-row aio-end">
+            <button type="button" data-action="close" data-i18n="close">閉じる</button>
+        </div>
+    </dialog>
+
+    <script>
+        import '../app/boot.js'
+    </script>
+</body>
+</html>

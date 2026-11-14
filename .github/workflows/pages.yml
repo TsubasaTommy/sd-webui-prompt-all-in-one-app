@@ -1,0 +1,74 @@
+name: Deploy Web (GitHub Pages)
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+  # release.yml がサブモジュール更新を GITHUB_TOKEN で push しても push トリガーは発火しないので、
+  # その完了をきっかけに再デプロイする
+  workflow_run:
+    workflows: [ Create release ]
+    types: [ completed ]
+
+# ビルド (npm パッケージのスクリプトが動く) には読み取り権限だけを渡し、Pages への書き込みはデプロイだけに許す
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  # デプロイ途中で止めると Pages が中途半端な状態になりうるので、後続は待たせる
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: read # actions/configure-pages が Pages の設定を読むため
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Configure Pages
+        id: pages
+        uses: actions/configure-pages@v5
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: web/.nvmrc
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install
+        run: npm ci
+        working-directory: web
+
+      - name: Build
+        run: npm run build
+        working-directory: web
+        env:
+          SITE: ${{ steps.pages.outputs.origin }}
+          BASE_PATH: ${{ steps.pages.outputs.base_path }}
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: web/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4

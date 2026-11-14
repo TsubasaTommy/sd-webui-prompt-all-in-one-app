@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.astro/
+# scripts/sync-aio.mjs がサブモジュールから生成するもの
+src/aio/
+src/styles/gradio-shell.css
+public/aio/

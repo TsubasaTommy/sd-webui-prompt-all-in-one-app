@@ -1,0 +1,2 @@
+# Docker イメージ (Python 版) には Web 版 (GitHub Pages) のソースやビルド成果物は不要
+web/
