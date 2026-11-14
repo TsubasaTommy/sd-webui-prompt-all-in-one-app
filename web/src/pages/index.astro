@@ -16,6 +16,24 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, '/')
     <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
     <!-- 上流 Vue アプリが参照するグローバル (旧 static/index.html と同じ) -->
     <script is:inline>
+        // テーマ: 既定はダーク。上流アプリは URL の ?__theme= を見てテーマを決め、切り替え時もこの値を書き換えて再読み込みする。
+        // URL に無いときは前回の選択 (無ければ dark) を補い、選んだテーマを覚えておく
+        ;(function () {
+            var params = new URLSearchParams(location.search)
+            var theme = params.get('__theme')
+            try {
+                if (theme === 'dark' || theme === 'light') localStorage.setItem('aio-theme', theme)
+                else theme = localStorage.getItem('aio-theme')
+            } catch (e) {}
+            if (theme !== 'dark' && theme !== 'light') theme = 'dark'
+            if (params.get('__theme') !== theme) {
+                params.set('__theme', theme)
+                history.replaceState(null, '', location.pathname + '?' + params.toString() + location.hash)
+            }
+            document.documentElement.classList.toggle('aio-dark', theme === 'dark')
+            window.__aioTheme = theme
+        })()
+
         window.APP_MODE = true
         window.embeddings = []
         window.loras = []
@@ -38,6 +56,8 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, '/')
     </script>
 </head>
 <body>
+    <!-- 最初の描画からテーマを当てて、明るい画面がちらつかないようにする -->
+    <script is:inline>document.body.classList.add(window.__aioTheme)</script>
     <header id="aio-toolbar">
         <span class="aio-title">Prompt All-in-One <small>Web</small></span>
         <span class="aio-note" data-i18n="note">データはこのブラウザ内にだけ保存されます</span>
